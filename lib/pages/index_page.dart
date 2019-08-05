@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'cart_page.dart';
+import 'category_page.dart';
+import 'home_page.dart';
+import 'member_page.dart';
 
 class IndexPage extends StatefulWidget {
   @override
@@ -32,9 +36,44 @@ class _IndexPageState extends State<IndexPage> {
 
   ];
 
+  final List tabBodies = [
+    HomePage(),
+    CateGoryPage(),
+    CartPage(),
+    MemberPage()
+  ];
+
+  int currentIndex = 0;
+
+  var currentPage;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    currentPage = tabBodies[currentIndex];
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return null;
+    return Scaffold(
+
+      backgroundColor: Color.fromRGBO(244,245,245,1.0),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, //需要三个以上才可以看出效果
+          currentIndex: currentIndex,
+          items: bottomTabs,
+          onTap: (index){
+           setState(() {
+             currentIndex = index;
+             currentPage = tabBodies[index];
+           });
+          },
+      ),
+      body: currentPage,
+
+    );
   }
 }
