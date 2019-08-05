@@ -21,7 +21,8 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text('首页测试Dio'),
         ),
-        body: Container(
+        body: SingleChildScrollView(
+            child: Container(
           child: Column(
             children: <Widget>[
               TextField(
@@ -32,7 +33,10 @@ class _HomePageState extends State<HomePage> {
                     helperText: '请输入你喜欢的类型'),
                 autofocus: false, //关闭第一响应者  键盘不默认打开
               ),
-              RaisedButton(child: Text('选择完毕'), onPressed: _choiceAction,),
+              RaisedButton(
+                child: Text('选择完毕'),
+                onPressed: _choiceAction,
+              ),
               Text(
                 showText,
                 overflow: TextOverflow.ellipsis,
@@ -40,37 +44,25 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-        ),
+        )),
       ),
     );
   }
 
-
-  void _choiceAction(){
-
+  void _choiceAction() {
     print('开始选择');
 
-    if(typeController.text.toString()==''){
-
+    if (typeController.text.toString() == '') {
       showDialog(
           context: context,
-          builder: (context)=>AlertDialog(title: Text('类型不能为空'))
-      );
-
-
-
-    }else{
-
-      getHttp(typeController.text.toString()).then((val){
-
+          builder: (context) => AlertDialog(title: Text('类型不能为空')));
+    } else {
+      getHttp(typeController.text.toString()).then((val) {
         setState(() {
           showText = val['data']['name'].toString();
         });
-
       });
-
     }
-
   }
 
   Future getHttp(String TypeTest) async {
