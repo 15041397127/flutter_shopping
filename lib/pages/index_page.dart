@@ -4,7 +4,7 @@ import 'cart_page.dart';
 import 'category_page.dart';
 import 'home_page.dart';
 import 'member_page.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class IndexPage extends StatefulWidget {
   @override
   _IndexPageState createState() {
@@ -57,6 +57,11 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
+    //屏幕适配 根据iphone6
+    ScreenUtil.instance = ScreenUtil(
+        width: 750,
+        height: 1334
+    )..init(context);
     // TODO: implement build
     return Scaffold(
 

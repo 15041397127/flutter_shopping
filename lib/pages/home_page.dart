@@ -45,9 +45,11 @@ class _HomePageState extends State<HomePage> {
                 if(snapshot.hasData){
                   var data = json.decode(snapshot.data.toString());
                   List<Map> swiper = (data['data']['slides']as List).cast();
+                  List<Map> navgatorList = (data['data']['category']as List).cast();
                   return Column(
                     children: <Widget>[
                       SwiperDiy(swiperDateList: swiper,),
+                      TopNavigator(navigatorList: navgatorList,),
                     ],
 
                   );
@@ -67,7 +69,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 
-//首页轮播组件
+/***
+ *首页轮播组件
+ *
+ */
 class SwiperDiy extends StatelessWidget {
 
    final List swiperDateList;
@@ -78,11 +83,7 @@ class SwiperDiy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    //屏幕适配 根据iphone6
-    ScreenUtil.instance = ScreenUtil(
-      width: 750,
-      height: 1334
-    )..init(context);
+
 
     print('设备像素密度:${ScreenUtil.pixelRatio}');
     print('设备高:${ScreenUtil.screenHeight}');
@@ -110,6 +111,54 @@ class SwiperDiy extends StatelessWidget {
     );
   }
 }
+
+/**
+ * 顶部导航组件
+ */
+class TopNavigator extends StatelessWidget {
+
+  final List navigatorList;
+  TopNavigator({this.navigatorList});
+
+  Widget _gridViewItemUI(BuildContext context,item){
+
+    return InkWell(
+      onTap: (){
+        print('点击了导航');
+      },
+      child: Column(
+        children: <Widget>[
+          Image.network(item['image'],width: ScreenUtil().setWidth(95),),
+          Text(item['mallCategoryName']),
+        ],
+      ),
+
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    if(this.navigatorList.length>10){
+      this.navigatorList.removeRange(10, this.navigatorList.length);
+    }
+
+    // TODO: implement build
+    return Container(
+      height: ScreenUtil().setHeight(320),
+      padding: EdgeInsets.all(3.0),
+      child:GridView.count(
+          crossAxisCount: 5,
+          padding: EdgeInsets.all(5.0),
+          children: navigatorList.map((item){
+            return _gridViewItemUI(context, item);
+          }).toList(),
+      ),
+    );
+  }
+}
+
+
 
 
 
