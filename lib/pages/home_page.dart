@@ -1,8 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'dart:async';
-import '../config/http_headers.dart';
+import '../service/service_method.dart';
 
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() {
+    return _HomePageState();
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+
+  String homePageContent = '正在获取数据';
+
+  @override
+  void initState() {
+
+    getHomePageContent().then((val){
+
+    setState(() {
+      homePageContent = val.toString();
+    });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      
+      appBar: AppBar(
+        title: Text('首页'),
+      ),
+      
+      //与listView冲突
+      body: SingleChildScrollView(
+        child: Text(homePageContent),
+        
+      ),
+      
+    );
+  }
+}
+
+
+
+
+
+
+//测试方法
+/*
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() {
@@ -68,6 +115,8 @@ class _HomePageState extends State<HomePage> {
 
 //  https://time.geekbang.org/serv/v1/column/newAll
 }
+
+*/
 
 /*
 class HomePage extends StatefulWidget {
