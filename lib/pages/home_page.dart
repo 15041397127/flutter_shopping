@@ -87,8 +87,6 @@ class SwiperDiy extends StatelessWidget {
     print('设备像素密度:${ScreenUtil.pixelRatio}');
     print('设备高:${ScreenUtil.screenHeight}');
     print('设备宽:${ScreenUtil.screenWidth}');
-//push
-
 
 //     arr = ['http://wx4.sinaimg.cn/large/7695e2e2ly1g5pnrmegv6j20m80f5taf.jpg',
 //           'http://wx4.sinaimg.cn/large/7695e2e2ly1g5pnrm4b9vj212z0lltdf.jpg',
