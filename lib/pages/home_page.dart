@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
       
       appBar: AppBar(
         title: Text('首页'),
+        elevation: 0.0,
       ),
       
       //SingleChildScrollView与listView冲突
