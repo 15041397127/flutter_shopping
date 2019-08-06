@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../service/service_method.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,17 +14,17 @@ class _HomePageState extends State<HomePage> {
 
   String homePageContent = '正在获取数据';
 
-  @override
-  void initState() {
-
-    getHomePageContent().then((val){
-
-    setState(() {
-      homePageContent = val.toString();
-    });
-    });
-    super.initState();
-  }
+//  @override
+//  void initState() {
+//
+//    getHomePageContent().then((val){
+//
+//    setState(() {
+//      homePageContent = val.toString();
+//    });
+//    });
+//    super.initState();
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +35,62 @@ class _HomePageState extends State<HomePage> {
         title: Text('首页'),
       ),
       
-      //与listView冲突
-      body: SingleChildScrollView(
-        child: Text(homePageContent),
-        
+      //SingleChildScrollView与listView冲突
+      //使用FutureBuilder 数据驱动视图
+      body: FutureBuilder(
+         future: getHomePageContent(),
+          builder: (context,snapshot){
+                if(snapshot.hasData){
+                  var data = json.decode(snapshot.data.toString());
+                  List<Map> swiper = (data['data']['slides']as List).cast();
+                  return Column(
+                    children: <Widget>[
+                      SwiperDiy(swiperDateList:swiper),
+                    ],
+
+                  );
+                }else{
+                  return Center(
+                    child: Text('加载中....'),
+                  );
+                }
+          },
       ),
-      
     );
   }
 }
+
+
+//首页轮播组件
+class SwiperDiy extends StatelessWidget {
+
+  final List swiperDateList;
+
+//  SwiperDiy({Key key,this.swiperDateList}):super(key:key);
+  SwiperDiy({this.swiperDateList});//目前可以省略这么写 构造函数
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      height: 333,
+      child: Swiper(
+
+        itemCount:swiperDateList.length,
+        itemBuilder: (BuildContext context,int index){
+            return Image.network('${swiperDateList[index]['image']}');
+        },
+        pagination: SwiperPagination(),
+        autoplay: true,
+
+      ),
+
+    );
+  }
+}
+
 
 
 
