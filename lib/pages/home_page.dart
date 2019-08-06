@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                   List<Map> swiper = (data['data']['slides']as List).cast();
                   return Column(
                     children: <Widget>[
-                      SwiperDiy(swiperDateList:swiper),
+                      SwiperDiy(swiperDateList: swiper,),
                     ],
 
                   );
@@ -64,15 +64,18 @@ class _HomePageState extends State<HomePage> {
 //首页轮播组件
 class SwiperDiy extends StatelessWidget {
 
-  final List swiperDateList;
-
+   final List swiperDateList;
 //  SwiperDiy({Key key,this.swiperDateList}):super(key:key);
   SwiperDiy({this.swiperDateList});//目前可以省略这么写 构造函数
 
-
-
+//   List arr = List();
   @override
   Widget build(BuildContext context) {
+
+//     arr = ['http://wx4.sinaimg.cn/large/7695e2e2ly1g5pnrmegv6j20m80f5taf.jpg',
+//           'http://wx4.sinaimg.cn/large/7695e2e2ly1g5pnrm4b9vj212z0lltdf.jpg',
+//           'http://wx3.sinaimg.cn/large/006FCqYVgy1g5pu3o5phzj31910u07ab.jpg'
+//     ];
     // TODO: implement build
     return Container(
       height: 333,
@@ -80,7 +83,7 @@ class SwiperDiy extends StatelessWidget {
 
         itemCount:swiperDateList.length,
         itemBuilder: (BuildContext context,int index){
-            return Image.network('${swiperDateList[index]['image']}');
+            return Image.network('${swiperDateList[index]['image']}',fit: BoxFit.fill,);
         },
         pagination: SwiperPagination(),
         autoplay: true,
