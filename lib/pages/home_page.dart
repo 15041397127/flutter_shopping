@@ -4,6 +4,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage>
   int page = 1;
   List<Map> hotGoodsList = [];
 
+  //获取热销商品数据
   void _getHotGoods() {
     var formData = {'page': page};
 
@@ -69,6 +71,7 @@ class _HomePageState extends State<HomePage>
                       color: Colors.pink, fontSize: ScreenUtil().setSp(26)),
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Text('¥${val['mallPrice']}'),
                     Text(
@@ -162,8 +165,8 @@ class _HomePageState extends State<HomePage>
             List<Map> floor2 = (data['data']['floor2'] as List).cast();
             List<Map> floor3 = (data['data']['floor3'] as List).cast();
 
-            return SingleChildScrollView(
-              child: Column(
+            return ListView(
+
                 children: <Widget>[
                   SwiperDiy(
                     swiperDateList: swiper,
@@ -199,7 +202,6 @@ class _HomePageState extends State<HomePage>
                   ),
                   _hotGoods(),
                 ],
-              ),
             );
           } else {
             return Center(
