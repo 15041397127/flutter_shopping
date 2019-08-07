@@ -4,7 +4,7 @@ import 'dart:io';
 import '../config/service_url.dart';
 
 
-Future request(url,formData) async {
+Future request(url,{formData}) async {
   try {
     print('开始获取数据commen........');
 
