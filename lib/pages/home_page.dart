@@ -19,6 +19,14 @@ class _HomePageState extends State<HomePage>
   int page = 1;
   List<Map> hotGoodsList = [];
 
+//  GlobalKey<RefreshIndicatorState> _footKey = GlobalKey<RefreshIndicatorState>();
+//  GlobalKey<EasyRefreshState> _easyRefreshKey =
+//  new GlobalKey<EasyRefreshState>();
+//  GlobalKey<RefreshHeaderState> _headerKey =
+//  new GlobalKey<RefreshHeaderState>();
+//  GlobalKey<RefreshFooterState> _footerKey =
+//  new GlobalKey<RefreshFooterState>();
+
   //获取热销商品数据
   void _getHotGoods() {
     var formData = {'page': page};
@@ -92,24 +100,19 @@ class _HomePageState extends State<HomePage>
         spacing: 2,
         children: listWidget,
       );
-    }else{
-
+    } else {
       return Text('');
     }
   }
 
-  Widget _hotGoods(){
-
+  Widget _hotGoods() {
     return Container(
-
       child: Column(
         children: <Widget>[
           hotTitle,
           _warpList(),
-
         ],
       ),
-
     );
   }
 
@@ -121,7 +124,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    _getHotGoods();
+//    _getHotGoods();
 //    getHomePageContent().then((val){
 //
 //    setState(() {
@@ -165,8 +168,28 @@ class _HomePageState extends State<HomePage>
             List<Map> floor2 = (data['data']['floor2'] as List).cast();
             List<Map> floor3 = (data['data']['floor3'] as List).cast();
 
-            return ListView(
-
+            return EasyRefresh(
+              header: ClassicalHeader(
+                refreshText: '下拉刷新',
+                refreshReadyText: '正在刷新...',
+                refreshingText: '正在刷新...',
+                refreshedText: '刷新成功',
+                bgColor: Colors.white,
+                textColor: Colors.pink,
+                infoColor: Colors.pink,
+                showInfo: false,
+                infoText: '刷新中',
+              ),
+              footer: ClassicalFooter(
+                bgColor: Colors.white,
+                textColor: Colors.pink,
+                infoColor: Colors.pink,
+                showInfo: true,
+                noMoreText: '',
+                infoText: '加载中',
+                loadReadyText: '上拉加载'
+              ),
+              child: ListView(
                 children: <Widget>[
                   SwiperDiy(
                     swiperDateList: swiper,
@@ -202,6 +225,31 @@ class _HomePageState extends State<HomePage>
                   ),
                   _hotGoods(),
                 ],
+              ),
+             onRefresh: ()async{
+                setState(() {
+                  page =1;
+                  hotGoodsList = [];
+                });
+             },
+              onLoad: () async{
+                print('开始加载更多.......');
+
+                var formData = {'page': page};
+
+                await request('homePageBelowContent', formData: formData).then((val) {
+                  var data = json.decode(val.toString());
+
+                  List<Map> newGoodsList = (data['data'] as List).cast();
+
+                  //模仿上拉加载
+                  //新数组加到旧数组
+                  setState(() {
+                    hotGoodsList.addAll(newGoodsList);
+                    page++;
+                  });
+                });
+              },
             );
           } else {
             return Center(
