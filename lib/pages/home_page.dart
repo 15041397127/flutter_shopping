@@ -12,8 +12,8 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
-
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   //保持页面状态
   @override
   bool get wantKeepAlive => true;
@@ -34,6 +34,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
+    //经纬度
+    var formData = {'lon': '115.02932', 'lat': '35.76189'};
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +46,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       //SingleChildScrollView与listView冲突
       //使用FutureBuilder 数据驱动视图
       body: FutureBuilder(
-        future: getHomePageContent(),
+        future: request('homePageContent', formData),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = json.decode(snapshot.data.toString());
@@ -54,7 +56,16 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                 data['data']['advertesPicture']['PICTURE_ADDRESS'];
             String leaderImage = data['data']['shopInfo']['leaderImage'];
             String leaderPhone = data['data']['shopInfo']['leaderPhone'];
-            List<Map>recommendList = (data['data']['recommend']as List).cast();
+            List<Map> recommendList =
+                (data['data']['recommend'] as List).cast();
+            //楼层数据
+            String floorTitle = data['data']['floor1Pic']['PICTURE_ADDRESS'];
+            String floorTitle2 = data['data']['floor2Pic']['PICTURE_ADDRESS'];
+            String floorTitle3 = data['data']['floor3Pic']['PICTURE_ADDRESS'];
+            List<Map>floor1 = (data['data']['floor1']as List).cast();
+            List<Map>floor2 = (data['data']['floor2']as List).cast();
+            List<Map>floor3 = (data['data']['floor3']as List).cast();
+
 
             return SingleChildScrollView(
               child: Column(
@@ -70,7 +81,23 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                     leaderImage: leaderImage,
                     leaderPhone: leaderPhone,
                   ),
-                  Recommend(recommendList: recommendList,),
+                  Recommend(
+                    recommendList: recommendList,
+                  ),
+                  FloorTitle(
+                    picture_address: floorTitle,
+                  ),
+                  FloorContent(floorGoodsList: floor1,),
+                  FloorTitle(
+                    picture_address: floorTitle2,
+                  ),
+                  FloorContent(floorGoodsList: floor2,),
+                  FloorTitle(
+                    picture_address: floorTitle3,
+                  ),
+                  FloorContent(floorGoodsList: floor3,),
+                  test1(),
+
                 ],
               ),
             );
@@ -293,7 +320,6 @@ class Recommend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
 //    for(int i =0;i<5;i++){
 //
 //      this.recommendList.add(this.recommendList[0]);
@@ -303,13 +329,121 @@ class Recommend extends StatelessWidget {
     // TODO: implement build
     return Container(
       height: ScreenUtil().setHeight(330),
-      margin: EdgeInsets.only(top: 10.0),
+      margin: EdgeInsets.only(top: 10.0), //外边距
+      child: Column(
+        children: <Widget>[_titleWidget(), _recommendList()],
+      ),
+    );
+  }
+}
+
+/**
+ * 楼层标题
+ */
+
+class FloorTitle extends StatelessWidget {
+  final String picture_address;
+
+  FloorTitle({this.picture_address});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: Image.network(picture_address),
+    );
+  }
+}
+
+/**
+ * 楼层商品列表
+ */
+class FloorContent extends StatelessWidget {
+  final List floorGoodsList;
+
+  FloorContent({this.floorGoodsList});
+
+  Widget _goodsItem(Map goods) {
+    return Container(
+      width: ScreenUtil().setWidth(375),
+      child: InkWell(
+        onTap: () {
+          print('点击了楼层商品');
+        },
+        child: Image.network(goods['image']),
+      ),
+    );
+  }
+
+  Widget _firstRow() {
+    return Row(
+      children: <Widget>[
+        _goodsItem(floorGoodsList[0]),
+        Column(
+          children: <Widget>[
+            _goodsItem(floorGoodsList[1]),
+            _goodsItem(floorGoodsList[2]),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _otherGoods(){
+
+    return Row(
+      children: <Widget>[
+        _goodsItem(floorGoodsList[3]),
+        _goodsItem(floorGoodsList[4]),
+      ],
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
       child: Column(
         children: <Widget>[
-          _titleWidget(),
-          _recommendList()
+          _firstRow(),
+          _otherGoods(),
         ],
       ),
+    );
+  }
+}
+
+class test1 extends StatefulWidget {
+  @override
+  _test1State createState() {
+    return _test1State();
+  }
+}
+
+class _test1State extends State<test1> {
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    request('homePageBelowContent', 1).then((val){
+      print(val);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      child: Text('aaaaa'),
     );
   }
 }
