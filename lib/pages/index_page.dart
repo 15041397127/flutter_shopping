@@ -36,7 +36,7 @@ class _IndexPageState extends State<IndexPage> {
 
   ];
 
-  final List tabBodies = [
+  final List<Widget> tabBodies = [
     HomePage(),
     CateGoryPage(),
     CartPage(),
@@ -77,7 +77,10 @@ class _IndexPageState extends State<IndexPage> {
            });
           },
       ),
-      body: currentPage,
+      body: IndexedStack(
+        index: currentIndex,
+        children:tabBodies,
+      ),
 
     );
   }
