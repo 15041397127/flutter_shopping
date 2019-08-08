@@ -40,8 +40,8 @@ class _CateGoryPageState extends State<CateGoryPage> {
       
       var data = json.decode(val.toString());
       
-      CategoryListModel categoryListModel = CategoryListModel.fromJson(data['data']);
-      categoryListModel.data.forEach((item)=>print(item.mallCategoryName));
+      CategoryModel categoryModel = CategoryModel.fromJson(data['data']);
+      categoryModel.data.forEach((item)=>print(item.mallCategoryName));
 
 
 //      print(data);
