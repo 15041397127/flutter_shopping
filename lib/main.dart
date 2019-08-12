@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'pages/index_page.dart';
 import 'package:provide/provide.dart';
 import 'provide/counter.dart';
+import 'provide/child_category.dart';
 
 void main(){
 
   var counter = Counter();
+  var childCategory = ChildCategory();
   var proivders = Providers();
   proivders
-           ..provide(Provider<Counter>.value(counter));//注册依赖 绑定各个类可多个
+           ..provide(Provider<Counter>.value(counter))
+           ..provide(Provider<ChildCategory>.value(childCategory));//注册依赖 绑定各个类可多个
 
   runApp(ProviderNode(child:MyApp(),providers:proivders));
 }
