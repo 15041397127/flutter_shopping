@@ -91,6 +91,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
   Widget _leftInkWell(int index) {
 
+    //更改按下的颜色
     bool isClick = false;
     isClick = (index == listIndex) ? true :false;
 
@@ -108,7 +109,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       child: Container(
         height: ScreenUtil().setHeight(100),
         padding: EdgeInsets.only(left: 10, top: 20),
-        decoration: BoxDecoration(color: isClick?Colors.black26:Colors.white,
+        decoration: BoxDecoration(color: isClick?Color.fromRGBO(236, 236, 236, 1.0):Colors.white,
             border: Border(
                 bottom: BorderSide(width: 1, color: Colors.black12))),
         child: Text(
@@ -130,6 +131,10 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         list = categoryModel.data;
       });
 //      categoryModel.data.forEach((item) => print(item.mallCategoryName));
+
+      //初始化右边导航栏 第一个数组的数据
+     Provide.value<ChildCategory>(context).getChildCategory(list[0].bxMallSubDto);
+
 
     });
   }
