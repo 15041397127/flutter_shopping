@@ -440,15 +440,21 @@ class Recommend extends StatelessWidget {
           color: Colors.white,
           border: Border(left: BorderSide(width: 0.5, color: Colors.black12)),
         ),
-        child: Column(
+        child:Column(
           children: <Widget>[
-            Image.network(recommendList[index]['image']),
-            Text('¥${recommendList[index]['mallPrice']}'),
-            Text(
+             Image.network(recommendList[index]['image'],fit: BoxFit.fill,),
+            Expanded(
+                child:
+                    Text('¥${recommendList[index]['mallPrice']}'),
+                ) ,
+            Expanded(child:  Text(
               '¥${recommendList[index]['price']}',
               style: TextStyle(
                   decoration: TextDecoration.lineThrough, color: Colors.grey),
-            ),
+            ),),
+
+
+
           ],
         ),
       ),
@@ -457,8 +463,8 @@ class Recommend extends StatelessWidget {
 
   //横向列表
   Widget _recommendList() {
-    return Container(
-      height: ScreenUtil().setHeight(280),
+    return Expanded(child: Container(
+//      height: ScreenUtil().setHeight(280),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: recommendList.length,
@@ -466,7 +472,7 @@ class Recommend extends StatelessWidget {
           return _item(index);
         },
       ),
-    );
+    ));
   }
 
   @override
@@ -478,13 +484,14 @@ class Recommend extends StatelessWidget {
 
 //    this.recommendList.add(this.recommendList);
     // TODO: implement build
-    return Container(
-      height: ScreenUtil().setHeight(330),
-      margin: EdgeInsets.only(top: 10.0), //外边距
-      child: Column(
-        children: <Widget>[_titleWidget(), _recommendList()],
-      ),
-    );
+    return  Container(
+        height: ScreenUtil().setWidth(350),
+        margin: EdgeInsets.only(top: 10.0), //外边距
+        child:Column(
+          children: <Widget>[_titleWidget(), _recommendList()],
+        ),
+      );
+
   }
 }
 
