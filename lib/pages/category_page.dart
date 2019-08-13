@@ -30,7 +30,10 @@ class _CateGoryPageState extends State<CateGoryPage> {
     // TODO: implement build
 
     return Scaffold(
-      appBar: AppBar(title: Text('商品分类'), elevation: 0.0,),
+      appBar: AppBar(
+        title: Text('商品分类'),
+        elevation: 0.0,
+      ),
       body: Container(
         child: Row(
           children: <Widget>[
@@ -46,8 +49,6 @@ class _CateGoryPageState extends State<CateGoryPage> {
       ),
     );
   }
-
-
 }
 
 //左侧分类导航栏
@@ -59,7 +60,6 @@ class LeftCategoryNav extends StatefulWidget {
 }
 
 class _LeftCategoryNavState extends State<LeftCategoryNav> {
-
   List list = [];
   var listIndex = 0;
 
@@ -80,28 +80,25 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     return Container(
       width: ScreenUtil().setWidth(180),
       decoration: BoxDecoration(
-          border: Border(right: BorderSide(width: 1, color: Colors.black12))
-      ),
+          border: Border(right: BorderSide(width: 1, color: Colors.black12))),
       child: ListView.builder(
           itemCount: list.length,
           itemBuilder: (BuildContext context, int index) {
             return _leftInkWell(index);
-          }
-      ),
+          }),
     );
   }
 
   Widget _leftInkWell(int index) {
-
     //更改按下的颜色
     bool isClick = false;
-    isClick = (index == listIndex) ? true :false;
+    isClick = (index == listIndex) ? true : false;
 
     return InkWell(
       onTap: () {
-         setState(() {
-           listIndex = index;
-         });
+        setState(() {
+          listIndex = index;
+        });
 
         //点击改变右侧内容 使用provide
         var childList = list[index].bxMallSubDto;
@@ -111,9 +108,10 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       child: Container(
         height: ScreenUtil().setHeight(100),
         padding: EdgeInsets.only(left: 10, top: 20),
-        decoration: BoxDecoration(color: isClick?Color.fromRGBO(236, 236, 236, 1.0):Colors.white,
-            border: Border(
-                bottom: BorderSide(width: 1, color: Colors.black12))),
+        decoration: BoxDecoration(
+            color: isClick ? Color.fromRGBO(236, 236, 236, 1.0) : Colors.white,
+            border:
+                Border(bottom: BorderSide(width: 1, color: Colors.black12))),
         child: Text(
           list[index].mallCategoryName,
           style: TextStyle(fontSize: ScreenUtil().setSp(26)),
@@ -122,11 +120,9 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     );
   }
 
-
   void _getCategory() async {
     await request('getCategory').then((val) {
       var data = json.decode(val.toString());
-
 
       CategoryModel categoryModel = CategoryModel.fromJson(data);
       setState(() {
@@ -135,9 +131,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 //      categoryModel.data.forEach((item) => print(item.mallCategoryName));
 
       //初始化右边导航栏 第一个数组的数据
-     Provide.value<ChildCategory>(context).getChildCategory(list[0].bxMallSubDto);
-
-
+      Provide.value<ChildCategory>(context)
+          .getChildCategory(list[0].bxMallSubDto);
     });
   }
 }
@@ -186,39 +181,35 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
           decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
-                  bottom: BorderSide(width: 1.0, color: Colors.black12))
-          ),
+                  bottom: BorderSide(width: 1.0, color: Colors.black12))),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: childCategory.childCategoryList.length,
               itemBuilder: (BuildContext context, int index) {
                 return _rightInkWell(childCategory.childCategoryList[index]);
-              }
-          ),
+              }),
         );
       },
-
     );
   }
 
   Widget _rightInkWell(BxMallSubDto item) {
     return InkWell(
-      onTap: () {
-
-      },
+      onTap: () {},
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 10.0),
-        child: Text(item.mallSubName, style: TextStyle(fontSize: ScreenUtil().setSp(28)),),
+        child: Text(
+          item.mallSubName,
+          style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+        ),
       ),
     );
   }
-
 }
-
 
 /**
  *  商品列表详情页面 可上拉加载
-*/
+ */
 
 class CategoryGoodsList extends StatefulWidget {
   @override
@@ -228,6 +219,8 @@ class CategoryGoodsList extends StatefulWidget {
 }
 
 class _CategoryGoodsListState extends State<CategoryGoodsList> {
+  List list = [];
+
   @override
   void initState() {
     _getGoodsList();
@@ -242,38 +235,104 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Center(
-      
-      child: Text('哈哈哈'),
-    );
+    return Container(
+      width: ScreenUtil().setWidth(570),
+      height: ScreenUtil().setHeight(970),
+      child:ListView.builder(
+          itemCount: list.length,
+          itemBuilder:(context,index){
+            return _listWidget(index);
+          }
+      ),
+      );
   }
 
-  void _getGoodsList()async{
+  void _getGoodsList() async {
+    var data = {'categoryId': '4', 'categorySubId': '', 'page': 1};
 
-    var data = {
-      'categoryId' :'4',
-       'categorySubId':'',
-      'page':1
-    };
-
-
-
-    await request('getMallGoods',formData: data).then((val){
-
+    await request('getMallGoods', formData: data).then((val) {
       var data = json.decode(val.toString());
 
       CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
-//      setState(() {
-//
-//        goodsList = 
-//      });
+      setState(() {
+        list = goodsList.data;
+      });
 
-//      print('分类商品列表>>>>>>>.${data}');
-    
-     print('>>>>>>>>>${goodsList.data[0].goodsName}');
+      // print('分类商品列表>>>>>>>.${data}');
 
+      // print('>>>>>>>>>${goodsList.data[0].goodsName}');
     });
+  }
 
+  Widget _goodsImage(index) {
+    return Container(
+      width: ScreenUtil().setWidth(200),
+      child: Image.network(list[index].image),
+    );
+  }
+
+  Widget _goodsName(index) {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      width: ScreenUtil().setWidth(350),
+      child: Text(
+        list[index].goodsName,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+      ),
+    );
+  }
+
+  Widget _goodsPrice(index) {
+    return Container(
+      margin: EdgeInsets.only(top: 20.0),
+      width: ScreenUtil().setWidth(350),
+      child: Row(
+        children: <Widget>[
+          Text(
+            '价格:¥${list[index].presentPrice}',
+            style:
+                TextStyle(color: Colors.pink, fontSize: ScreenUtil().setSp(30)),
+          ),
+          Text(
+            '¥${list[index].oriPrice}',
+            style: TextStyle(
+                color: Colors.black26, decoration: TextDecoration.lineThrough),
+          ),
+          //带有删除线的风格
+        ],
+      ),
+    );
+  }
+
+
+  Widget _listWidget(int index){
+
+    return InkWell(
+      onTap: (){},
+      child:Container(
+        padding: EdgeInsets.only(top: 5.0,bottom: 5.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(width: 1.0,color: Colors.black12)
+          )
+        ),
+        child: Row(
+          children: <Widget>[
+            _goodsImage(index),
+            Column(
+              children: <Widget>[
+                _goodsName(index),
+                _goodsPrice(index),
+              ],
+            )
+          ],
+        ),
+      ) ,
+
+    );
 
   }
 
