@@ -263,7 +263,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
       var data = json.decode(val.toString());
 
       CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
-      if(goodsList == null){
+      if(goodsList.data == null){
         Provide.value<CategoryGoodListProvide>(context)
             .getGoodsList([]);
       }else{
