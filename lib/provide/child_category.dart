@@ -10,6 +10,9 @@ class ChildCategory with ChangeNotifier {
   //左侧大类ID 默认为4
   String categoryId = '4';
 
+  //小类id
+  String categorysubId = '';
+
   getChildCategory(List<BxMallSubDto> list,String categoryBidId) {
     //每次点击左侧大类 都置为0
     chilidIndex = 0;
@@ -30,8 +33,9 @@ class ChildCategory with ChangeNotifier {
   }
 
   //改变子类索引
-  changeChildIndex(index) {
+  changeChildIndex(index,String subId) {
     chilidIndex = index;
+    categorysubId = subId;
     notifyListeners();
   }
 }
