@@ -4,8 +4,12 @@ import '../model/category.dart';
 class ChildCategory with ChangeNotifier {
   List<BxMallSubDto> childCategoryList = [];
 
-  getChildCategory(List<BxMallSubDto> list) {
+  //点击按下状态管理  高亮索引
+  int chilidIndex = 0;
 
+  getChildCategory(List<BxMallSubDto> list) {
+    //每次点击左侧大类 都置为0
+    chilidIndex = 0;
     BxMallSubDto bxMallSubDto = BxMallSubDto();
 
     bxMallSubDto.mallSubId = '00';
@@ -16,6 +20,12 @@ class ChildCategory with ChangeNotifier {
     childCategoryList = [bxMallSubDto];
 
     childCategoryList.addAll(list);
+    notifyListeners();
+  }
+
+  //改变子类索引
+  changeChildIndex(index) {
+    chilidIndex = index;
     notifyListeners();
   }
 }
