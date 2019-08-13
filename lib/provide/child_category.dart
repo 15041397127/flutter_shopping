@@ -7,10 +7,16 @@ class ChildCategory with ChangeNotifier {
   //点击按下状态管理  高亮索引
   int chilidIndex = 0;
 
-  getChildCategory(List<BxMallSubDto> list) {
+  //左侧大类ID 默认为4
+  String categoryId = '4';
+
+  getChildCategory(List<BxMallSubDto> list,String categoryBidId) {
     //每次点击左侧大类 都置为0
     chilidIndex = 0;
+    categoryId = categoryBidId;
     BxMallSubDto bxMallSubDto = BxMallSubDto();
+
+
 
     bxMallSubDto.mallSubId = '00';
     bxMallSubDto.mallCategoryId = '00';

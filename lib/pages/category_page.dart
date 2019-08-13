@@ -106,7 +106,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         var childList = list[index].bxMallSubDto;
         var categoryId = list[index].mallCategoryId;
         //改变状态
-        Provide.value<ChildCategory>(context).getChildCategory(childList);
+        Provide.value<ChildCategory>(context).getChildCategory(childList,categoryId);
         _getGoodsList(categoryId: categoryId);//{}可选参数需要带Key:key值
 
       },
@@ -138,7 +138,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
       //初始化右边导航栏 第一个数组的数据
       Provide.value<ChildCategory>(context)
-          .getChildCategory(list[0].bxMallSubDto);
+          .getChildCategory(list[0].bxMallSubDto,list[0].mallCategoryId);
     });
   }
 
@@ -233,6 +233,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     return InkWell(
       onTap: () {
         Provide.value<ChildCategory>(context).changeChildIndex(index);
+       _getGoodsList(item.mallSubId);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 10.0),
@@ -246,6 +247,28 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
       ),
     );
   }
+
+  //获取详情接口数据
+  void _getGoodsList(String categorySubId) async {
+
+    var categoryId = Provide.value<ChildCategory>(context).categoryId;
+
+    var data = {
+      'categoryId': categoryId == null ? '4' : categoryId,
+      'categorySubId': categorySubId,
+      'page': 1
+    };
+
+    await request('getMallGoods', formData: data).then((val) {
+      var data = json.decode(val.toString());
+
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+      Provide.value<CategoryGoodListProvide>(context)
+          .getGoodsList(goodsList.data);
+    });
+  }
+
+
 }
 
 /**
