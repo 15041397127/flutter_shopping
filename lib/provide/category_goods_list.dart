@@ -10,4 +10,10 @@ class CategoryGoodListProvide with ChangeNotifier {
 
     notifyListeners();
   }
+
+  getMoreList(List<CategoryListData> list) {
+    goodsList.addAll(list);
+
+    notifyListeners();
+  }
 }

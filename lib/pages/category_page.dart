@@ -7,6 +7,7 @@ import 'package:provide/provide.dart';
 import '../provide/child_category.dart';
 import '../model/category_goods_list_model.dart';
 import '../provide/category_goods_list.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class CateGoryPage extends StatefulWidget {
   @override
@@ -300,22 +301,58 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
 
   @override
   Widget build(BuildContext context) {
+
+     var scorllController = ScrollController();
     // TODO: implement build
     return Provide<CategoryGoodListProvide>(
       builder: (context, child, data) {
+
+        try{
+          if(Provide.value<ChildCategory>(context).page == 1){
+            //列表位置更新 刷新列表为初始位置
+            scorllController.jumpTo(0.0);
+          }
+        }
+        catch(e){
+          print('第一次初始化进入页面${e}');
+        }
+
         if (data.goodsList.length > 0) {
-          return Expanded(
-            //Flexible
-            child: Container(
-              width: ScreenUtil().setWidth(570),
+          return
+            Expanded(
+              //Flexible
+              child: Container(
+                width: ScreenUtil().setWidth(570),
 //              height: ScreenUtil().setHeight(970),
-              child: ListView.builder(
-                  itemCount: data.goodsList.length,
-                  itemBuilder: (context, index) {
-                    return _listWidget(data.goodsList, index);
-                  }),
-            ),
-          );
+                child: EasyRefresh(
+                    header: ClassicalHeader(
+
+                    ),
+                    footer: ClassicalFooter(
+                      bgColor: Colors.white,
+                      textColor: Colors.pink,
+                      infoColor: Colors.pink,
+                      showInfo: true,
+                      noMoreText: Provide.value<ChildCategory>(context).noMoreTest,
+                      infoText: '加载中',
+                      loadReadyText: '上拉加载',
+                      loadingText: '上拉加载中...',
+                      loadedText: '加载完成',
+                    ),
+                    onLoad: ()async{
+                       _getMoreList(); //获取详情接口数据
+
+                    },
+                    child: ListView.builder(
+                        controller: scorllController,
+                        itemCount: data.goodsList.length,
+                        itemBuilder: (context, index) {
+                          return _listWidget(data.goodsList, index);
+                        },
+                    ),
+                ),
+              ),
+            );
         } else {
           return Center(
             child: Text('暂时没有数据'),
@@ -323,6 +360,31 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
         }
       },
     );
+  }
+
+  void _getMoreList() async {
+    Provide.value<ChildCategory>(context).addPage();
+    var categoryId = Provide.value<ChildCategory>(context).categoryId;
+    var categorySubId = Provide.value<ChildCategory>(context).categorysubId;
+    var page = Provide.value<ChildCategory>(context).page;
+    var data = {
+      'categoryId': categoryId == null ? '4' : categoryId,
+      'categorySubId': categorySubId,
+      'page': page
+    };
+
+    await request('getMallGoods', formData: data).then((val) {
+      var data = json.decode(val.toString());
+
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+      if (goodsList.data == null) {
+        Provide.value<ChildCategory>(context).changeNoMoreText('没有更多了');
+
+      } else {
+        Provide.value<CategoryGoodListProvide>(context)
+            .getMoreList(goodsList.data);
+      }
+    });
   }
 
   Widget _goodsImage(list, index) {
