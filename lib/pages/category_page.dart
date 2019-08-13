@@ -288,7 +288,7 @@ class CategoryGoodsList extends StatefulWidget {
 
 class _CategoryGoodsListState extends State<CategoryGoodsList> {
 //  List list = [];
-
+  var scorllController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -302,7 +302,7 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   @override
   Widget build(BuildContext context) {
 
-     var scorllController = ScrollController();
+
     // TODO: implement build
     return Provide<CategoryGoodListProvide>(
       builder: (context, child, data) {
@@ -368,8 +368,8 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     var categorySubId = Provide.value<ChildCategory>(context).categorysubId;
     var page = Provide.value<ChildCategory>(context).page;
     var data = {
-      'categoryId': categoryId == null ? '4' : categoryId,
-      'categorySubId': categorySubId,
+      'categoryId': categoryId,
+      'categorySubId': categorySubId == '00' ? '':categorySubId,
       'page': page
     };
 
