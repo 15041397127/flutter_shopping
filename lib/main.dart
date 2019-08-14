@@ -4,6 +4,7 @@ import 'package:provide/provide.dart';
 import 'provide/counter.dart';
 import 'provide/child_category.dart';
 import 'provide/category_goods_list.dart';
+import 'package:fluro/fluro.dart';
 
 void main(){
 
@@ -15,6 +16,10 @@ void main(){
            ..provide(Provider<Counter>.value(counter))
            ..provide(Provider<ChildCategory>.value(childCategory))//注册依赖 绑定各个类可多个
            ..provide(Provider<CategoryGoodListProvide>.value(goodsDetailList));//商品详情绑定
+
+
+  //初始化路由
+  final router = Router();
 
 
   runApp(ProviderNode(child:MyApp(),providers:proivders));
