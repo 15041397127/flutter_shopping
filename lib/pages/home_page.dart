@@ -297,9 +297,14 @@ class SwiperDiy extends StatelessWidget {
       child: Swiper(
         itemCount: swiperDateList.length,
         itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            '${swiperDateList[index]['image']}',
-            fit: BoxFit.fill,
+          return InkWell(
+            onTap: (){
+              Application.router.navigateTo(context, '/detail?id=${swiperDateList[index]['goodsId']}');
+            },
+            child: Image.network(
+              '${swiperDateList[index]['image']}',
+              fit: BoxFit.fill,
+            ),
           );
         },
         pagination: SwiperPagination(),
@@ -433,9 +438,11 @@ class Recommend extends StatelessWidget {
   }
 
   //商品单独项目
-  Widget _item(index) {
+  Widget _item(context,index) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Application.router.navigateTo(context, '/detail?id=${recommendList[index]['goodsId']}');
+      },
       child: Container(
         height: ScreenUtil().setHeight(280),
         width: ScreenUtil().setWidth(250),
@@ -473,7 +480,7 @@ class Recommend extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: recommendList.length,
         itemBuilder: (BuildContext context, int index) {
-          return _item(index);
+          return _item(context,index);
         },
       ),
     ));
@@ -526,37 +533,39 @@ class FloorContent extends StatelessWidget {
 
   FloorContent({this.floorGoodsList});
 
-  Widget _goodsItem(Map goods) {
+  Widget _goodsItem(context,Map goods) {
     return Container(
       width: ScreenUtil().setWidth(375),
       child: InkWell(
         onTap: () {
-          print('点击了楼层商品');
+          Application.router.navigateTo(context, '/detail?id=${goods['goodsId']}');
+
+//          print('点击了楼层商品');
         },
         child: Image.network(goods['image']),
       ),
     );
   }
 
-  Widget _firstRow() {
+  Widget _firstRow(context) {
     return Row(
       children: <Widget>[
-        _goodsItem(floorGoodsList[0]),
+        _goodsItem(context,floorGoodsList[0]),
         Column(
           children: <Widget>[
-            _goodsItem(floorGoodsList[1]),
-            _goodsItem(floorGoodsList[2]),
+            _goodsItem(context,floorGoodsList[1]),
+            _goodsItem(context,floorGoodsList[2]),
           ],
         ),
       ],
     );
   }
 
-  Widget _otherGoods() {
+  Widget _otherGoods(context) {
     return Row(
       children: <Widget>[
-        _goodsItem(floorGoodsList[3]),
-        _goodsItem(floorGoodsList[4]),
+        _goodsItem(context,floorGoodsList[3]),
+        _goodsItem(context,floorGoodsList[4]),
       ],
     );
   }
@@ -567,8 +576,8 @@ class FloorContent extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          _firstRow(),
-          _otherGoods(),
+          _firstRow(context),
+          _otherGoods(context),
         ],
       ),
     );

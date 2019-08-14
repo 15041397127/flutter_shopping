@@ -27,7 +27,7 @@ class DetailPage extends StatelessWidget {
             return Container(
               child: Column(
                 children: <Widget>[
-                  Text('哈哈哈'),
+                  Text('哈哈哈>>${goodsId}'),
                 ],
               ),
             );
