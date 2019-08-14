@@ -5,6 +5,8 @@ import 'provide/counter.dart';
 import 'provide/child_category.dart';
 import 'provide/category_goods_list.dart';
 import 'package:fluro/fluro.dart';
+import 'routers/application.dart';
+import 'routers/routers.dart';
 
 void main(){
 
@@ -17,20 +19,21 @@ void main(){
            ..provide(Provider<ChildCategory>.value(childCategory))//注册依赖 绑定各个类可多个
            ..provide(Provider<CategoryGoodListProvide>.value(goodsDetailList));//商品详情绑定
 
-
-  //初始化路由
-  final router = Router();
-
-
   runApp(ProviderNode(child:MyApp(),providers:proivders));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final router = Router();
+    //注入
+    Routers.configureRoutes(router);
+    Application.router = router;
+
     // TODO: implement build
     return Container(
       child:MaterialApp(
+        onGenerateRoute: Application.router.generator,
         title: '百姓生活+',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
