@@ -4,6 +4,7 @@ import '../provide/details_info.dart';
 import 'details_page/details_top_area.dart';
 import 'details_page/details_explain.dart';
 import 'details_page/details_tabbar.dart';
+import 'details_page/details_web.dart';
 
 class DetailPage extends StatelessWidget {
   final String goodsId;
@@ -32,7 +33,8 @@ class DetailPage extends StatelessWidget {
                 children: <Widget>[
                   DetailTopArea(),
                   DetailsExplain(),
-                  DetailTabBar()
+                  DetailTabBar(),
+                  DetailsWeb()
                 ],
               ),
             );
