@@ -19,7 +19,7 @@ class DetailTopArea extends StatelessWidget {
                 _goodsImage(goodsInfo.image1),
                 _goodsName(goodsInfo.goodsName),
                 _goodsNum(goodsInfo.goodsSerialNumber),
-                _goodsPrice(goodsInfo.presentPrice, goodsInfo.oriPrice)
+                _goodsPrice(goodsInfo.presentPrice, goodsInfo.oriPrice),
               ],
             ),
           );
