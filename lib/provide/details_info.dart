@@ -8,10 +8,10 @@ class DetailInfoProvide with ChangeNotifier {
 
   //从后台获取数据
 
-  getGoodsInfor(String id) {
+  getGoodsInfor(String id) async{
     var formData = {'goodId': id};
 
-    request('getGoodDetailById', formData: formData).then((val) {
+   await request('getGoodDetailById', formData: formData).then((val) {
       var responsData = json.decode(val.toString());
 
       print(responsData);
