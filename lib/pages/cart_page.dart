@@ -2,19 +2,59 @@ import 'package:flutter/material.dart';
 import '../provide/counter.dart';
 import 'package:provide/provide.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../provide/cart.dart';
 
-class CartPage extends StatefulWidget {
+class CartPage extends StatelessWidget {
   @override
-  _CartPageState createState() {
-    return _CartPageState();
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('购物车'),
+        ),
+        body: FutureBuilder(
+            future: _getCartInfo(context),
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.hasData) {
+                List cartList =
+                    Provide.value<CartProvide>(context).cartInfoModelList;
+                return ListView.builder(
+                    itemCount: cartList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        
+                        title: Text(cartList[index].goodsName),
+                        
+                      );
+                    });
+              } else {
+                return Text('正在加载');
+              }
+            }),);
+  }
+
+  //获取 数据方法
+  Future<String> _getCartInfo(BuildContext context) async {
+    await Provide.value<CartProvide>(context).getCartInfo();
+
+    return 'end';
   }
 }
 
-class _CartPageState extends State<CartPage> {
-  List<String> testList = [];
+/**
+ *class CartPage extends StatefulWidget {
+    @override
+    _CartPageState createState() {
+    return _CartPageState();
+    }
+    }
 
-  //增加方法
-  void _addMethod() async {
+    class _CartPageState extends State<CartPage> {
+    List<String> testList = [];
+
+    //增加方法
+    void _addMethod() async {
     //初始化
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -25,81 +65,82 @@ class _CartPageState extends State<CartPage> {
     preferences.setStringList('test', testList);
 
     _show();
-  }
+    }
 
-  //查询
-  void _show() async {
+    //查询
+    void _show() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     if (preferences.getStringList('test') != null) {
-      setState(() {
-        testList = preferences.getStringList('test');
-      });
+    setState(() {
+    testList = preferences.getStringList('test');
+    });
     }
-  }
+    }
 
-  //删除
-  void _clear() async {
+    //删除
+    void _clear() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     preferences.remove('test');
 
     setState(() {
-      testList = [];
+    testList = [];
     });
-//    preferences.clear();//所有
-  }
+    //    preferences.clear();//所有
+    }
 
-  @override
-  void initState() {
+    @override
+    void initState() {
     _show();
     super.initState();
-  }
+    }
 
-  @override
-  void dispose() {
+    @override
+    void dispose() {
     super.dispose();
-  }
+    }
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text('购物车'),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 500.0,
-              child: ListView.builder(
-                itemCount: testList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(testList[index]),
-                  );
-                },
-              ),
-            ),
-            RaisedButton(
-                onPressed: (){
-                  _addMethod();
-                },
-              child: Text('增加'),
-            ),
-            RaisedButton(
-              onPressed: (){
-                _clear();
-              },
-              child: Text('清空'),
-            ),
-          ],
-        ),
-      ),
+    appBar: AppBar(
+    title: Text('购物车'),
+    ),
+    body: Center(
+    child: Column(
+    children: <Widget>[
+    Container(
+    height: 500.0,
+    child: ListView.builder(
+    itemCount: testList.length,
+    itemBuilder: (BuildContext context, int index) {
+    return ListTile(
+    title: Text(testList[index]),
     );
-  }
-}
+    },
+    ),
+    ),
+    RaisedButton(
+    onPressed: (){
+    _addMethod();
+    },
+    child: Text('增加'),
+    ),
+    RaisedButton(
+    onPressed: (){
+    _clear();
+    },
+    child: Text('清空'),
+    ),
+    ],
+    ),
+    ),
+    );
+    }
+    }
+ */
 
 /**
  * class CartPage extends StatelessWidget {
