@@ -5,32 +5,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../provide/cart.dart';
 import 'cart_page/cart_item.dart';
+import 'cart_page/cart_bottom.dart';
 
 class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        appBar: AppBar(
-          title: Text('购物车'),
-        ),
-        body: FutureBuilder(
-            future: _getCartInfo(context),
-            builder: (BuildContext context, snapshot) {
-              if (snapshot.hasData) {
-                List cartList =
-                    Provide.value<CartProvide>(context).cartInfoModelList;
-                return ListView.builder(
+      appBar: AppBar(
+        title: Text('购物车'),
+      ),
+      body: FutureBuilder(
+          future: _getCartInfo(context),
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.hasData) {
+              List cartList =
+                  Provide.value<CartProvide>(context).cartInfoModelList;
+
+              return Stack(
+                children: <Widget>[
+                  ListView.builder(
                     itemCount: cartList.length,
                     itemBuilder: (context, index) {
-                      return CartItem(
-                        cartList[index]
-                      );
-                    });
-              } else {
-                return Text('正在加载');
-              }
-            }),);
+                      return CartItem(cartList[index]);
+                    },
+                  ),
+                  Positioned(bottom: 0.0,left: 0.0, child: CartBottom()),
+                ],
+              );
+            } else {
+              return Text('正在加载');
+            }
+          }),
+    );
   }
 
   //获取 数据方法
