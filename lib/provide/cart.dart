@@ -86,4 +86,40 @@ class CartProvide with ChangeNotifier {
 
     notifyListeners();
   }
+
+/**
+ * 删除单个购物车商品
+ */
+
+   deleteOneGoods(String goodsId) async{
+
+    SharedPreferences preferences  = await SharedPreferences.getInstance();
+    
+    cartString = preferences.get('cartInfo');
+    
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+
+    int tempIndex = 0;
+
+    int delIndex = 0;
+
+    tempList.forEach((item){
+
+      if(item['goodsId'] == goodsId){
+
+        delIndex = tempIndex;
+      }
+
+      tempIndex++;
+    });
+
+     tempList.removeAt(delIndex);
+
+     cartString = json.encode(tempList).toString();
+
+     preferences.setString('cartInfo', cartString);
+
+     await getCartInfo();
+
+   }
 }
