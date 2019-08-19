@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../model/cart_info.dart';
 import 'car_count.dart';
+import '../../provide/cart.dart';
+import 'package:provide/provide.dart';
 
 class CartItem extends StatelessWidget {
   final CartInfoMode cartInfoMode;
@@ -24,7 +26,7 @@ class CartItem extends StatelessWidget {
           _cartCheckBt(context,cartInfoMode),
           _cartImage(),
           _cartGoodsName(),
-          _cartPrice()
+          _cartPrice(context)
         ],
       ),
     );
@@ -68,7 +70,7 @@ class CartItem extends StatelessWidget {
   }
 
   //商品价格
-  Widget _cartPrice() {
+  Widget _cartPrice(context) {
     return Container(
       width: ScreenUtil().setWidth(150),
       alignment: Alignment.centerRight,
@@ -77,7 +79,9 @@ class CartItem extends StatelessWidget {
           Text('¥${cartInfoMode.price}'),
           Container(
               child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Provide.value<CartProvide>(context).deleteOneGoods(cartInfoMode.goodsId);
+            },
             child: Icon(
               Icons.delete,
               color: Colors.black26,
