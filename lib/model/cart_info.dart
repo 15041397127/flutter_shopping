@@ -4,8 +4,10 @@ class CartInfoMode {
     String goodsName;
     String images;
     double price;
+    //多选
+    bool isCheck;
 
-    CartInfoMode({this.count, this.goodsId, this.goodsName, this.images, this.price});
+    CartInfoMode({this.count, this.goodsId, this.goodsName, this.images, this.price,this.isCheck});
 
     factory CartInfoMode.fromJson(Map<String, dynamic> json) {
         return CartInfoMode(
@@ -14,6 +16,7 @@ class CartInfoMode {
             goodsName: json['goodsName'],
             images: json['images'],
             price: json['price'],
+            isCheck:json['isCheck'],
         );
     }
 
@@ -24,6 +27,7 @@ class CartInfoMode {
         data['goodsName'] = this.goodsName;
         data['images'] = this.images;
         data['price'] = this.price;
+        data['isCheck'] = this.isCheck;
         return data;
     }
 }

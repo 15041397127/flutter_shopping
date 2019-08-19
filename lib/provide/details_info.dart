@@ -23,6 +23,15 @@ class DetailInfoProvide with ChangeNotifier {
       print(responsData);
 
       goodsInfor = DetailsModel.fromJson(responsData);
+
+      if(goodsInfor.data.goodInfo == null){
+        goodsInfor.data.goodInfo.goodsName = '';
+        goodsInfor.data.goodInfo.goodsDetail = '';
+        goodsInfor.data.goodInfo.goodsSerialNumber = '';
+        goodsInfor.data.goodInfo.image1 = '';
+      }
+
+
       notifyListeners();
     });
   }

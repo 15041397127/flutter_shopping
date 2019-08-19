@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../model/cart_info.dart';
+import 'car_count.dart';
 
 class CartItem extends StatelessWidget {
   final CartInfoMode cartInfoMode;
@@ -20,7 +21,7 @@ class CartItem extends StatelessWidget {
       ),
       child: Row(
         children: <Widget>[
-          _cartCheckBt(),
+          _cartCheckBt(context,cartInfoMode),
           _cartImage(),
           _cartGoodsName(),
           _cartPrice()
@@ -30,10 +31,10 @@ class CartItem extends StatelessWidget {
   }
 
   //多选按钮
-  Widget _cartCheckBt() {
+  Widget _cartCheckBt(context,item) {
     return Container(
       child: Checkbox(
-        value: true,
+        value: item.isCheck,
         activeColor: Colors.pink,
         onChanged: (bool) {},
       ),
@@ -60,6 +61,7 @@ class CartItem extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text(cartInfoMode.goodsName),
+          CartCount()
         ],
       ),
     );

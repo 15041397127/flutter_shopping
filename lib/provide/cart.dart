@@ -38,7 +38,8 @@ class CartProvide with ChangeNotifier {
         'goodsName': goodsName,
         'count': count,
         'price': price,
-        'images': images
+        'images': images,
+        'isCheck':true
       };
 
       tempList.add(newGoods);
