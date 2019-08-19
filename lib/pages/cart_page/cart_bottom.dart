@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provide/provide.dart';
+import '../../provide/cart.dart';
 
 class CartBottom extends StatelessWidget {
   @override
@@ -8,13 +10,19 @@ class CartBottom extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(5.0),
       color: Colors.white,
-      child: Row(
-        children: <Widget>[_selectAllBtn(), _allPriceArea(), _goButton()],
-      ),
+      child: Provide<CartProvide>(builder: (context, child, cartItem) {
+        return Row(
+          children: <Widget>[
+            _selectAllBtn(context),
+            _allPriceArea(context),
+            _goButton(context)
+          ],
+        );
+      }),
     );
   }
 
-  Widget _selectAllBtn() {
+  Widget _selectAllBtn(context) {
     return Container(
       child: Row(
         children: <Widget>[
@@ -29,7 +37,9 @@ class CartBottom extends StatelessWidget {
     );
   }
 
-  Widget _allPriceArea() {
+  Widget _allPriceArea(context) {
+    double allPrice = Provide.value<CartProvide>(context).allPrice;
+
     return Container(
       width: ScreenUtil().setWidth(430),
       child: Column(
@@ -50,7 +60,7 @@ class CartBottom extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 width: ScreenUtil().setWidth(150),
                 child: Text(
-                  '¥ 1992',
+                  '${allPrice}',
                   style: TextStyle(
                     color: Colors.pink,
                     fontSize: ScreenUtil().setSp(36.0),
@@ -75,13 +85,11 @@ class CartBottom extends StatelessWidget {
     );
   }
 
-  Widget _goButton() {
+  Widget _goButton(context) {
+    int allGoodsCount = Provide.value<CartProvide>(context).allGoodsCount;
     return Container(
       width: ScreenUtil().setWidth(180),
-      padding: EdgeInsets.only(
-        left: 10.0,
-        right: 10.0
-      ),
+      padding: EdgeInsets.only(left: 10.0, right: 10.0),
       child: Container(
         margin: EdgeInsets.only(right: 5.0),
         padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
@@ -93,7 +101,7 @@ class CartBottom extends StatelessWidget {
         child: InkWell(
           onTap: () {},
           child: Text(
-            '结算(6)',
+            '${allGoodsCount}',
             style: TextStyle(color: Colors.white),
             textAlign: TextAlign.center,
             maxLines: 1,
