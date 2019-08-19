@@ -14,6 +14,9 @@ class CartProvide with ChangeNotifier {
   //商品总数量
   int allGoodsCount = 0;
 
+  //是否全选
+  bool isAllCheck = true;
+
   save(goodsId, goodsName, count, price, images) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -84,11 +87,16 @@ class CartProvide with ChangeNotifier {
       List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
       allPrice = 0;
       allGoodsCount = 0;
+      isAllCheck = true;
       tempList.forEach((item) {
         if (item['isCheck']) {
           allPrice += (item['count'] * item['price']);
 
           allGoodsCount += item['count'];
+        }else{
+
+          isAllCheck = false;
+
         }
 
         cartInfoModelList.add(CartInfoMode.fromJson(item));
@@ -163,4 +171,38 @@ class CartProvide with ChangeNotifier {
     await getCartInfo();
     
   }
+
+/**
+ *  点击全选按钮操作
+ */
+  changeAllCheckBtnState(bool isCheck)async{
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    cartString =  preferences.get('cartInfo');
+
+    List<Map>tempList = (json.decode(cartString.toString()) as List).cast();
+
+    List<Map>newList = [];
+
+
+    //dart循环里不允许改变旧值
+     for(var item in tempList){
+
+       var newItem = item;
+
+       newItem['isCheck'] = isCheck;
+
+       newList.add(newItem);
+
+     }
+
+     cartString = json.encode(newList).toString();
+
+     preferences.setString('cartInfo', cartString);
+
+     await getCartInfo();
+
+  }
+
 }
