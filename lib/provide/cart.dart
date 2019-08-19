@@ -108,6 +108,8 @@ class CartProvide with ChangeNotifier {
       if(item['goodsId'] == goodsId){
 
         delIndex = tempIndex;
+
+
       }
 
       tempIndex++;
