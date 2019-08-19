@@ -45,7 +45,7 @@ class CartProvide with ChangeNotifier {
         'count': count,
         'price': price,
         'images': images,
-        'isCheck':true
+        'isCheck': true
       };
 
       tempList.add(newGoods);
@@ -81,17 +81,14 @@ class CartProvide with ChangeNotifier {
     cartInfoModelList = [];
 
     if (cartString != null) {
-
       List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
       allPrice = 0;
       allGoodsCount = 0;
       tempList.forEach((item) {
+        if (item['isCheck']) {
+          allPrice += (item['count'] * item['price']);
 
-        if(item['isCheck']){
-
-              allPrice += (item['count'] * item['price']);
-
-              allGoodsCount += item['count'];
+          allGoodsCount += item['count'];
         }
 
         cartInfoModelList.add(CartInfoMode.fromJson(item));
@@ -103,40 +100,67 @@ class CartProvide with ChangeNotifier {
     notifyListeners();
   }
 
-/**
- * 删除单个购物车商品
- */
+  /**
+   * 删除单个购物车商品
+   */
 
-   deleteOneGoods(String goodsId) async{
+  deleteOneGoods(String goodsId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    SharedPreferences preferences  = await SharedPreferences.getInstance();
-    
     cartString = preferences.get('cartInfo');
-    
+
     List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
 
     int tempIndex = 0;
 
     int delIndex = 0;
 
-    tempList.forEach((item){
-
-      if(item['goodsId'] == goodsId){
-
+    tempList.forEach((item) {
+      if (item['goodsId'] == goodsId) {
         delIndex = tempIndex;
-
       }
 
       tempIndex++;
     });
 
-     tempList.removeAt(delIndex);
+    tempList.removeAt(delIndex);
 
-     cartString = json.encode(tempList).toString();
+    cartString = json.encode(tempList).toString();
 
-     preferences.setString('cartInfo', cartString);
+    preferences.setString('cartInfo', cartString);
 
-     await getCartInfo();
+    await getCartInfo();
+  }
 
-   }
+  /**
+   *  单选 全选逻辑
+   */
+
+  changCheckState(CartInfoMode cartInfoMode) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    cartString = preferences.get('cartInfo');
+
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+
+    int tmpIndex = 0;
+
+    int changeIndex = 0;
+
+    tempList.forEach((item) {
+      if (item['goodsId'] == cartInfoMode.goodsId) {
+        changeIndex = tmpIndex;
+      }
+      tmpIndex++;
+    });
+    
+    tempList[changeIndex] = cartInfoMode.toJson();
+    
+    cartString = json.encode(tempList).toString();
+
+    preferences.setString('cartInfo', cartString);
+
+    await getCartInfo();
+    
+  }
 }
