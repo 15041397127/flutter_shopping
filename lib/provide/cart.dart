@@ -32,12 +32,22 @@ class CartProvide with ChangeNotifier {
 
     int ival = 0;
 
+    allGoodsCount = 0;
+
+    allPrice = 0;
+
     tempList.forEach((item) {
       if (item['goodsId'] == goodsId) {
         tempList[ival]['count'] = item['count'] + 1;
         cartInfoModelList[ival].count++;
         isHave = true;
       }
+
+      if(item['isCheck']){
+        allPrice += (cartInfoModelList[ival].price * cartInfoModelList[ival].count);
+        allGoodsCount += cartInfoModelList[ival].count;
+      }
+
       ival++;
     });
 
@@ -53,6 +63,8 @@ class CartProvide with ChangeNotifier {
 
       tempList.add(newGoods);
       cartInfoModelList.add(CartInfoMode.fromJson(newGoods));
+      allPrice += (count * price);
+      allGoodsCount += count;
     }
 
     cartString = json.encode(tempList).toString();
