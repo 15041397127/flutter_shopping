@@ -15,7 +15,8 @@ class MemberPage extends StatelessWidget {
           children: <Widget>[
             _topHeader(),
             _orderTitle(),
-            _orderType()
+            _orderType(),
+            _actionList()
           ],
         ));
   }
@@ -122,6 +123,41 @@ class MemberPage extends StatelessWidget {
         ),
       );
    }
+
+   //通用ListTitle
+   Widget _myListTitle(String title){
+
+    return Container(
+      
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(width: 1.0,color: Colors.black12)
+        ),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.blur_circular),
+         title: Text(title),
+        trailing: Icon(Icons.arrow_right),
+      ),
+    );
+    }
+
+    Widget _actionList(){
+
+    return Container(
+      margin: EdgeInsets.only(top: 10.0),
+      child: Column(
+        children: <Widget>[
+          _myListTitle('领取优惠券'),
+          _myListTitle('已领取优惠券'),
+          _myListTitle('地址管理'),
+          _myListTitle('客服电话'),
+          _myListTitle('关于我们'),
+        ],
+      ),
+    );
+    }
 
 }
 
