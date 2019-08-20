@@ -93,10 +93,8 @@ class CartProvide with ChangeNotifier {
           allPrice += (item['count'] * item['price']);
 
           allGoodsCount += item['count'];
-        }else{
-
+        } else {
           isAllCheck = false;
-
         }
 
         cartInfoModelList.add(CartInfoMode.fromJson(item));
@@ -161,48 +159,84 @@ class CartProvide with ChangeNotifier {
       }
       tmpIndex++;
     });
-    
+
     tempList[changeIndex] = cartInfoMode.toJson();
-    
+
     cartString = json.encode(tempList).toString();
 
     preferences.setString('cartInfo', cartString);
 
     await getCartInfo();
-    
   }
 
-/**
- *  点击全选按钮操作
- */
-  changeAllCheckBtnState(bool isCheck)async{
-
+  /**
+   *  点击全选按钮操作
+   */
+  changeAllCheckBtnState(bool isCheck) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    cartString =  preferences.get('cartInfo');
+    cartString = preferences.get('cartInfo');
 
-    List<Map>tempList = (json.decode(cartString.toString()) as List).cast();
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
 
-    List<Map>newList = [];
-
+    List<Map> newList = [];
 
     //dart循环里不允许改变旧值
-     for(var item in tempList){
+    for (var item in tempList) {
+      var newItem = item;
 
-       var newItem = item;
+      newItem['isCheck'] = isCheck;
 
-       newItem['isCheck'] = isCheck;
+      newList.add(newItem);
+    }
 
-       newList.add(newItem);
+    cartString = json.encode(newList).toString();
 
-     }
+    preferences.setString('cartInfo', cartString);
 
-     cartString = json.encode(newList).toString();
-
-     preferences.setString('cartInfo', cartString);
-
-     await getCartInfo();
-
+    await getCartInfo();
   }
 
+  /**
+   * 商品数量加减
+   */
+  addOrReduceAction(CartInfoMode cartItem, String todo) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    cartString = preferences.getString('cartInfo');
+
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+
+    int tempIndex = 0;
+    int changeIndex = 0;
+
+    tempList.forEach((item) {
+
+      if(item['goodsId'] == cartItem.goodsId){
+
+        changeIndex = tempIndex;
+      }
+        tempIndex++;
+
+    });
+
+    if(todo=='add'){
+
+      cartItem.count++;
+
+    }else if(cartItem.count>1){
+
+      cartItem.count--;
+    }
+
+
+    tempList[changeIndex] = cartItem.toJson();
+
+    cartString = json.encode(tempList).toString();
+
+    preferences.setString('cartInfo', cartString);
+
+    await getCartInfo();
+
+  }
 }
