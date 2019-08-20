@@ -9,6 +9,7 @@ import 'routers/application.dart';
 import 'routers/routers.dart';
 import 'provide/details_info.dart';
 import 'provide/cart.dart';
+import 'provide/currentIndex.dart';
 
 void main(){
 
@@ -17,13 +18,17 @@ void main(){
   var goodsDetailList = CategoryGoodListProvide();
   var detailInfoProvide = DetailInfoProvide();
   var cartProvide = CartProvide();
+  var currentIndexProvide = CurrentIndexProvide();
+
   var proivders = Providers();
+
   proivders
            ..provide(Provider<Counter>.value(counter))
            ..provide(Provider<ChildCategory>.value(childCategory))//注册依赖 绑定各个类可多个
            ..provide(Provider<CategoryGoodListProvide>.value(goodsDetailList))//商品详情绑定
            ..provide(Provider<DetailInfoProvide>.value(detailInfoProvide))//商品详情
-           ..provide(Provider<CartProvide>.value(cartProvide));//购物车
+           ..provide(Provider<CartProvide>.value(cartProvide))//购物车
+           ..provide(Provider<CurrentIndexProvide>.value(currentIndexProvide));//购物车跳转
 
   runApp(ProviderNode(child:MyApp(),providers:proivders));
 }
