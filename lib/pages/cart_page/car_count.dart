@@ -1,8 +1,13 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import '../../provide/cart.dart';
+import 'package:provide/provide.dart';
 
 class CartCount extends StatelessWidget {
+
+  var item;
+  CartCount(this.item);
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -14,37 +19,41 @@ class CartCount extends StatelessWidget {
       ),
       child: Row(
         children: <Widget>[
-          _reduceBtn(),
+          _reduceBtn(context),
           _countArea(),
-          _addBtn(),
+          _addBtn(context),
         ],
       ),
     );
   }
 
   //减少按钮
-  Widget _reduceBtn() {
+  Widget _reduceBtn(context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Provide.value<CartProvide>(context).addOrReduceAction(item, 'reduce');
+      },
       child: Container(
         width: ScreenUtil().setWidth(45.0),
         height: ScreenUtil().setWidth(45.0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: item.count>1?Colors.white:Colors.black12,
           border: Border(
             right: BorderSide(width: 1.0, color: Colors.black12),
           ),
         ),
-        child: Text('-'),
+        child:item.count>1? Text('-'):Text(''),
       ),
     );
   }
 
   //加号按钮
-  Widget _addBtn() {
+  Widget _addBtn(context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Provide.value<CartProvide>(context).addOrReduceAction(item, 'add');
+      },
       child: Container(
         width: ScreenUtil().setWidth(45.0),
         height: ScreenUtil().setWidth(45.0),
@@ -67,7 +76,7 @@ class CartCount extends StatelessWidget {
       height: ScreenUtil().setWidth(45),
       alignment: Alignment.center,
       color: Colors.white,
-      child: Text('100'),
+      child: Text('${item.count}'),
     );
   }
 }

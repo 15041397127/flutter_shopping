@@ -201,6 +201,7 @@ class CartProvide with ChangeNotifier {
    * 商品数量加减
    */
   addOrReduceAction(CartInfoMode cartItem, String todo) async {
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     cartString = preferences.getString('cartInfo');
@@ -208,6 +209,7 @@ class CartProvide with ChangeNotifier {
     List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
 
     int tempIndex = 0;
+
     int changeIndex = 0;
 
     tempList.forEach((item) {
@@ -228,7 +230,6 @@ class CartProvide with ChangeNotifier {
 
       cartItem.count--;
     }
-
 
     tempList[changeIndex] = cartItem.toJson();
 
