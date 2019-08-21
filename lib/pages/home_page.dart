@@ -6,6 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import '../routers/application.dart';
+import 'package:provide/provide.dart';
+import '../provide/currentIndex.dart';
+import '../provide/child_category.dart';
+import '../model/category.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -62,7 +66,8 @@ class _HomePageState extends State<HomePage>
         return InkWell(
           onTap: () {
             //路由跳转
-            Application.router.navigateTo(context, '/detail?id=${val['goodsId']}');
+            Application.router
+                .navigateTo(context, '/detail?id=${val['goodsId']}');
           },
           child: Container(
             width: ScreenUtil().setWidth(372),
@@ -185,14 +190,13 @@ class _HomePageState extends State<HomePage>
                 infoText: '刷新中',
               ),
               footer: ClassicalFooter(
-                bgColor: Colors.white,
-                textColor: Colors.pink,
-                infoColor: Colors.pink,
-                showInfo: true,
-                noMoreText: '',
-                infoText: '加载中',
-                loadReadyText: '上拉加载'
-              ),
+                  bgColor: Colors.white,
+                  textColor: Colors.pink,
+                  infoColor: Colors.pink,
+                  showInfo: true,
+                  noMoreText: '',
+                  infoText: '加载中',
+                  loadReadyText: '上拉加载'),
               child: ListView(
                 children: <Widget>[
                   SwiperDiy(
@@ -230,18 +234,19 @@ class _HomePageState extends State<HomePage>
                   _hotGoods(),
                 ],
               ),
-             onRefresh: ()async{
+              onRefresh: () async {
                 setState(() {
-                  page =1;
+                  page = 1;
                   hotGoodsList = [];
                 });
-             },
-              onLoad: () async{
+              },
+              onLoad: () async {
                 print('开始加载更多.......');
 
                 var formData = {'page': page};
 
-                await request('homePageBelowContent', formData: formData).then((val) {
+                await request('homePageBelowContent', formData: formData)
+                    .then((val) {
                   var data = json.decode(val.toString());
 
                   List<Map> newGoodsList = (data['data'] as List).cast();
@@ -298,8 +303,9 @@ class SwiperDiy extends StatelessWidget {
         itemCount: swiperDateList.length,
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
-            onTap: (){
-              Application.router.navigateTo(context, '/detail?id=${swiperDateList[index]['goodsId']}');
+            onTap: () {
+              Application.router.navigateTo(
+                  context, '/detail?id=${swiperDateList[index]['goodsId']}');
             },
             child: Image.network(
               '${swiperDateList[index]['image']}',
@@ -322,10 +328,11 @@ class TopNavigator extends StatelessWidget {
 
   TopNavigator({this.navigatorList});
 
-  Widget _gridViewItemUI(BuildContext context, item) {
+  Widget _gridViewItemUI(BuildContext context, item, index) {
     return InkWell(
       onTap: () {
         print('点击了导航');
+        _goCategory(context, index, item['mallCategoryId']);
       },
       child: Column(
         children: <Widget>[
@@ -339,22 +346,40 @@ class TopNavigator extends StatelessWidget {
     );
   }
 
+  void _goCategory(context, int index, String categoryId) async {
+    await request('getCategory').then((val) {
+      var data = json.decode(val.toString());
+
+      CategoryModel categoryModel = CategoryModel.fromJson(data);
+
+      List list = categoryModel.data;
+
+      Provide.value<ChildCategory>(context).changeCategory(categoryId, index);
+      Provide.value<ChildCategory>(context)
+          .getChildCategory(list[index].bxMallSubDto, categoryId);
+      Provide.value<CurrentIndexProvide>(context).changeIndex(1);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (this.navigatorList.length > 10) {
       this.navigatorList.removeRange(10, this.navigatorList.length);
     }
 
+    var tempIndex = -1;
+
     // TODO: implement build
     return Container(
       height: ScreenUtil().setHeight(250),
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
-        physics: NeverScrollableScrollPhysics(),//禁止回弹
+        physics: NeverScrollableScrollPhysics(), //禁止回弹
         crossAxisCount: 5,
         padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 1.0),
         children: navigatorList.map((item) {
-          return _gridViewItemUI(context, item);
+          tempIndex++;
+          return _gridViewItemUI(context, item, tempIndex);
         }).toList(),
       ),
     );
@@ -438,10 +463,11 @@ class Recommend extends StatelessWidget {
   }
 
   //商品单独项目
-  Widget _item(context,index) {
+  Widget _item(context, index) {
     return InkWell(
       onTap: () {
-        Application.router.navigateTo(context, '/detail?id=${recommendList[index]['goodsId']}');
+        Application.router.navigateTo(
+            context, '/detail?id=${recommendList[index]['goodsId']}');
       },
       child: Container(
         height: ScreenUtil().setHeight(280),
@@ -451,21 +477,22 @@ class Recommend extends StatelessWidget {
           color: Colors.white,
           border: Border(left: BorderSide(width: 0.5, color: Colors.black12)),
         ),
-        child:Column(
+        child: Column(
           children: <Widget>[
-             Image.network(recommendList[index]['image'],fit: BoxFit.fill,),
+            Image.network(
+              recommendList[index]['image'],
+              fit: BoxFit.fill,
+            ),
             Expanded(
-                child:
-                    Text('¥${recommendList[index]['mallPrice']}'),
-                ) ,
-            Expanded(child:  Text(
-              '¥${recommendList[index]['price']}',
-              style: TextStyle(
-                  decoration: TextDecoration.lineThrough, color: Colors.grey),
-            ),),
-
-
-
+              child: Text('¥${recommendList[index]['mallPrice']}'),
+            ),
+            Expanded(
+              child: Text(
+                '¥${recommendList[index]['price']}',
+                style: TextStyle(
+                    decoration: TextDecoration.lineThrough, color: Colors.grey),
+              ),
+            ),
           ],
         ),
       ),
@@ -474,13 +501,14 @@ class Recommend extends StatelessWidget {
 
   //横向列表
   Widget _recommendList() {
-    return Expanded(child: Container(
+    return Expanded(
+        child: Container(
 //      height: ScreenUtil().setHeight(280),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: recommendList.length,
         itemBuilder: (BuildContext context, int index) {
-          return _item(context,index);
+          return _item(context, index);
         },
       ),
     ));
@@ -495,14 +523,13 @@ class Recommend extends StatelessWidget {
 
 //    this.recommendList.add(this.recommendList);
     // TODO: implement build
-    return  Container(
-        height: ScreenUtil().setWidth(350),
-        margin: EdgeInsets.only(top: 10.0), //外边距
-        child:Column(
-          children: <Widget>[_titleWidget(), _recommendList()],
-        ),
-      );
-
+    return Container(
+      height: ScreenUtil().setWidth(350),
+      margin: EdgeInsets.only(top: 10.0), //外边距
+      child: Column(
+        children: <Widget>[_titleWidget(), _recommendList()],
+      ),
+    );
   }
 }
 
@@ -533,12 +560,13 @@ class FloorContent extends StatelessWidget {
 
   FloorContent({this.floorGoodsList});
 
-  Widget _goodsItem(context,Map goods) {
+  Widget _goodsItem(context, Map goods) {
     return Container(
       width: ScreenUtil().setWidth(375),
       child: InkWell(
         onTap: () {
-          Application.router.navigateTo(context, '/detail?id=${goods['goodsId']}');
+          Application.router
+              .navigateTo(context, '/detail?id=${goods['goodsId']}');
 
 //          print('点击了楼层商品');
         },
@@ -550,11 +578,11 @@ class FloorContent extends StatelessWidget {
   Widget _firstRow(context) {
     return Row(
       children: <Widget>[
-        _goodsItem(context,floorGoodsList[0]),
+        _goodsItem(context, floorGoodsList[0]),
         Column(
           children: <Widget>[
-            _goodsItem(context,floorGoodsList[1]),
-            _goodsItem(context,floorGoodsList[2]),
+            _goodsItem(context, floorGoodsList[1]),
+            _goodsItem(context, floorGoodsList[2]),
           ],
         ),
       ],
@@ -564,8 +592,8 @@ class FloorContent extends StatelessWidget {
   Widget _otherGoods(context) {
     return Row(
       children: <Widget>[
-        _goodsItem(context,floorGoodsList[3]),
-        _goodsItem(context,floorGoodsList[4]),
+        _goodsItem(context, floorGoodsList[3]),
+        _goodsItem(context, floorGoodsList[4]),
       ],
     );
   }

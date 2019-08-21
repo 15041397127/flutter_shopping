@@ -7,6 +7,9 @@ class ChildCategory with ChangeNotifier {
   //点击按下状态管理  高亮索引
   int chilidIndex = 0;
 
+  //大类索引
+  int categoryIndex =0;
+
   //左侧大类ID 默认为4
   String categoryId = '4';
 
@@ -53,6 +56,18 @@ class ChildCategory with ChangeNotifier {
 
   changeNoMoreText(String text) {
     noMoreTest = text;
+    notifyListeners();
+  }
+
+  //首页点击类别更改类别
+  changeCategory(String id,int index){
+
+    categoryId = id;
+
+    categoryIndex = index;
+
+    categorysubId = '';
+
     notifyListeners();
   }
 }

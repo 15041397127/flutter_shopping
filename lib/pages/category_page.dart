@@ -69,7 +69,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   @override
   void initState() {
     _getCategory();
-    _getGoodsList();
+//    _getGoodsList();
     super.initState();
   }
 
@@ -81,16 +81,23 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
-      width: ScreenUtil().setWidth(180),
-      decoration: BoxDecoration(
-          border: Border(right: BorderSide(width: 1, color: Colors.black12))),
-      child: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _leftInkWell(index);
-          }),
-    );
+    return  Provide<ChildCategory>(builder: (context,child,val){
+
+       _getGoodsList(context);
+       listIndex = val.categoryIndex;
+      return Container(
+        width: ScreenUtil().setWidth(180),
+        decoration: BoxDecoration(
+            border: Border(right: BorderSide(width: 1, color: Colors.black12))),
+        child: ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _leftInkWell(index);
+            }),
+      );
+
+    });
+
   }
 
   Widget _leftInkWell(int index) {
@@ -100,17 +107,18 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
     return InkWell(
       onTap: () {
-        setState(() {
-          listIndex = index;
-        });
+//        setState(() {
+//          listIndex = index;
+//        });
 
         //点击改变右侧内容 使用provide
         var childList = list[index].bxMallSubDto;
         var categoryId = list[index].mallCategoryId;
         //改变状态
+       Provide.value<ChildCategory>(context).changeCategory(categoryId, index);
         Provide.value<ChildCategory>(context)
             .getChildCategory(childList, categoryId);
-        _getGoodsList(categoryId: categoryId); //{}可选参数需要带Key:key值
+        _getGoodsList(context,categoryId: categoryId); //{}可选参数需要带Key:key值
       },
       child: Container(
         height: ScreenUtil().setHeight(100),
@@ -145,10 +153,10 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   }
 
   //获取详情接口数据
-  void _getGoodsList({String categoryId}) async {
+  void _getGoodsList(context,{String categoryId}) async {
     var data = {
-      'categoryId': categoryId == null ? '4' : categoryId,
-      'categorySubId': '',
+      'categoryId': categoryId == null ? Provide.value<ChildCategory>(context).categoryId : categoryId,
+      'categorySubId': Provide.value<ChildCategory>(context).categorysubId,
       'page': 1
     };
 
@@ -237,7 +245,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
     return InkWell(
       onTap: () {
         Provide.value<ChildCategory>(context).changeChildIndex(index,item.mallSubId);
-        _getGoodsList(item.mallSubId);
+        _getGoodsList(context,item.mallSubId);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 10.0),
@@ -253,7 +261,7 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
   }
 
   //获取详情接口数据
-  void _getGoodsList(String categorySubId) async {
+  void _getGoodsList(context,String categorySubId) async {
     var categoryId = Provide.value<ChildCategory>(context).categoryId;
 
     var data = {
